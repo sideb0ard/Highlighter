@@ -71,29 +71,33 @@ def highlight_doc(doc,query):    #
     print "\n"
     while  s < doc_length - query_length:
       j = query_length # ie. last character of query
-      print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1]
+      print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1], "S is",s+j-1,"J is", j
     
       while ((j > 0) and (query_list[j-1] == doc_list[s+j-1])):
         print "\n"
-        print "MATCH FOUND! -- ", query_list[j-1], doc_list[s+j-1]
-
+        print "MATCH FOUND! -- ", query_list[j-1], doc_list[s+j-1], "AT POSITION ", (s+j-1)
         j -= 1 # 
-        print "NOw looking for ", query_list[j-1]
+        print "Decremented J by one", j
+        print "NOw looking for ", query_list[j-1], "IN", doc_list[s+j-1]
 
         if (j > 0): # 
           k = badcharacter.get(doc_list[s+j-1])
           print "Moved k back one ", k
           print "Kmonster", k
           if k is None:
+            print "K is NONE, making it minus 1"
             k =-1
-#k = -1 unless k
+            print "newK", k
           if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
             s += (j-k-1)
+            print "NEW STEP S", s
           else:
             s+= goodsuffix[j];
+            print "GOOD SUFFIX NEW STEP S - J ", s, j
 #else:
-#           return s
-        j += 1
+        print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
+        return s
+        #j += 1
         print "J", j
       s += 1
     print "RETURNNZNONE!!"
