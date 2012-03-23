@@ -80,26 +80,27 @@ def highlight_doc(doc,query):    #
         print "Decremented J by one", j
         print "NOw looking for ", query_list[j-1], "IN", doc_list[s+j-1]
 
-        if (j > 0): # 
-          k = badcharacter.get(doc_list[s+j-1])
-          print "Moved k back one ", k
-          print "Kmonster", k
-          if k is None:
-            print "K is NONE, making it minus 1"
-            k =-1
-            print "newK", k
-          if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
-            s += (j-k-1)
-            print "NEW STEP S", s
-          else:
-            s+= goodsuffix[j];
-            print "GOOD SUFFIX NEW STEP S - J ", s, j
-#else:
-        print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
-        return s
-        #j += 1
-        print "J", j
+#        if (j > 0): # 
+#          k = badcharacter.get(doc_list[s+j-1])
+#          print "Moved k back one ", k
+#          print "Kmonster", k
+#          if k is None:
+#            print "K is NONE, making it minus 1"
+#            k =-1
+#            print "newK", k
+#          if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
+#            s += (j-k-1)
+#            print "NEW STEP S", s
+#          else:
+#            s+= goodsuffix[j];
+#            print "GOOD SUFFIX NEW STEP S - J ", s, j
+##else:
+#        print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
+#        return s
+#        #j += 1
+#        print "J", j
       s += 1
+      print "AH, NOT MATCHED - MOVING on.."
     print "RETURNNZNONE!!"
     return None
 
