@@ -1,21 +1,26 @@
 # -*- coding: utf-8 -*-
 # Thorsten Sideboard's Flying Circus text highlighting guff.
-import re
 import sys
 
-#def compute_prefix(list):
-#    size = len(list)
-#    k = 0
-#    q = 0
-#    result = {}
-#    while q < size:
-      
-      
+def compute_prefix(list):
+    size = len(list)
+    k = 0
+    q = 1
+    result = {}
+    result[0] = 0
+    while q < size:
+        while (k > 0) and (list[k] != list[q]):
+            print "testing", k
+            k = result.get(k-1)
+        if( k is not None and list[k] == list[q]):
+            k += 1 
+        result[q] = k
+        q += 1
+    return result
 
-def prepare_badcharacter_heuristic(query_list):
+def prepare_badcharacter_heuristic(query_list): # for each char in query, work out furthest right position
     result = {}
     for index,item in enumerate(query_list):
-      print index,item
       result[item] = index
     return result
 
@@ -23,9 +28,28 @@ def prepare_goodsuffix_heuristic(query_list):
     size = len(query_list)
     result = {}
 
-    reverse = query_list[::-1]
-    print reverse
+    reversd = query_list[::-1]
+    prefix_normal = compute_prefix(query_list)
+    print "PREFIX NORRRRMAL", prefix_normal
+    prefix_reversed = compute_prefix(reversd)
+    print "PREFIX REVVVNORRRRMAL", prefix_reversed
 
+    i = 0
+    while i <= size:
+        normpre = prefix_normal[size-1]
+        if normpre is None:
+            normpre = 0
+        result[i] = size - normpre
+        i += 1
+
+    i = 0
+    while i < size:
+        j = size - prefix_reversed[i]
+        k = i - prefix_reversed[i]+1
+        if result[j] > k:
+            result[j] = k
+        i += 1
+    return result
 
 def highlight_doc(doc,query):    # 
     doc_length = len(doc)
@@ -38,36 +62,42 @@ def highlight_doc(doc,query):    #
     doc_list = list(doc)
     query_list = list(query)
 
-    #print doc_list[0:3]
-
     badcharacter = prepare_badcharacter_heuristic(query_list)
     goodsuffix = prepare_goodsuffix_heuristic(query_list)
-    #print "BADBOTS", badcharacter
-    #print "GOODGUYS", goodsuffix
+    print "BADBOTS", badcharacter
+    print "GOODGUYS", goodsuffix
 
-    m = 0
     s = 0 # index - position within Doc
+    print "\n"
     while  s < doc_length - query_length:
       j = query_length # ie. last character of query
-      print "Run ", s, "looking for ", query_list[j-1]
       print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1]
     
       while ((j > 0) and (query_list[j-1] == doc_list[s+j-1])):
+        print "\n"
         print "MATCH FOUND! -- ", query_list[j-1], doc_list[s+j-1]
 
-        j -= 1 # now, with one match, lets move the char position postion within query to the left by one place
+        j -= 1 # 
         print "NOw looking for ", query_list[j-1]
 
-        if (j > 0): # i.e. not the first character
+        if (j > 0): # 
           k = badcharacter.get(doc_list[s+j-1])
           print "Moved k back one ", k
-        #  k = -1 unless k
-        #  if (k < j) and ((j-k-1) > goodsuffix[j]):
-        #    s += (j-k-1)
-        #  else
-        #    s+= goodsuffix[j];
-
+          print "Kmonster", k
+          if k is None:
+            k =-1
+#k = -1 unless k
+          if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
+            s += (j-k-1)
+          else:
+            s+= goodsuffix[j];
+#else:
+#           return s
+        j += 1
+        print "J", j
       s += 1
+    print "RETURNNZNONE!!"
+    return None
 
 
 if __name__ == "__main__":
