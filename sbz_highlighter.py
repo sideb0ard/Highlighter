@@ -69,49 +69,56 @@ def highlight_doc(doc,query):    #
     doc_list = list(doc)
     query_list = list(query)
 
-    badcharacter = prepare_badcharacter_heuristic(query_list)
+    badcharacter = prepare_badcharacter_heuristic(query_list) 
     goodsuffix = prepare_goodsuffix_heuristic(query_list)
 
     s = 0 # OUR STARTING POSITION WITHING THE DOCUMENT
     #print "\n"
     while  s <= doc_length - query_length:
       j = query_length # J is our position within the QUERY PATTERN WHICH WE'LL COUNT BACKWARDS FROM
+      print "\n**STARTING HERE** - J is {0} and S is {1}".format(j,s)
       print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1], "S is",s+j-1,"J is", j
       print "DOC_LENGTH is {0}, QUERY_LENGTH is {1}".format(doc_length,query_length)
     
-      while ((j > 0) and (s+j-1 < doc_length) and (query_list[j-1] == doc_list[s+j-1])): # IS THERE AN OFF BY ONE POSSIBILITY HERE?
+      while ((j > 0) and (s+j-1 < doc_length) and (query_list[j-1] == doc_list[s+j-1])):
+      #while ((j > 0) and (query_list[j-1] == doc_list[s+j-1])):
         print "\n"
-        print "MATCH FOUND! -- ", query_list[j-1], doc_list[s+j-1], "AT POSITION ", (s+j-1)
-        print "J is {0} and J minus one is {1}".format(j, j-1)
+        print "MATCH FOUND! QUERY - {0}, DOC - {1}, S - {2}, J - {3}".format(query_list[j-1],doc_list[s+j-1],s,j)
+        #print "Decremented J by one", j
         j -= 1 # 
         print "AFTER THE DECREMENT = querylist[j minus one is {0} and doclist(s plus j minus one) is {1}".format(query_list[j-1], doc_list[s+j-1])
-        #print "Decremented J by one", j
-        print "NOw looking for ", query_list[j-1], "IN", doc_list[s+j-1]
+        print "J is {0}".format(j)
 
-        if (j > 0): # 
-          k = badcharacter.get(doc_list[s+j-1])
-          #print "Moved k back one ", k
-          #print "Kmonster", k
-          if k is None:
-            #print "K is NONE, making it minus 1"
-            k =-1
-            #print "newK", k
-          if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
-            s += (j-k-1)
-            #print "NEW STEP S", s
-          else:
-            print "GOOD SUFFIX RETURNS", goodsuffix[j]
-            print "If i reintroduce s it will be {0}".format(s + goodsuffix[j])
-            #s+= goodsuffix[j];
-            #print "GOOD SUFFIX NEW STEP S - J ", s, j
+      print "FELL THROUGH - {0} didn't match {1}".format(query_list[j-1],doc_list[s+j-1])
+      print "J is {0}".format(j)
+      if (j > 0): # 
+        k = badcharacter.get(doc_list[s+j-1])
+        print "BADCHARS {0}".format(badcharacter)
+        #print "Moved k back one ", k
+        print "Kmonster", k
+        if k is None:
+          print "K is NONE, making it minus 1"
+          k =-1
+          #print "newK", k
+        if k is not None and k < j and ((j-k-1) > goodsuffix[j]):
+          s += (j-k-1)
+          print "K IS NOT NONE AND LESS THAN J - NEW STEP S", s
         else:
-          print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
-          return s
-          print "J", j
+          print "AT THIS POINT S IS {0}".format(s)
+          print "GOOD SUFFIX RETURNS", goodsuffix[j]
+          print "FULL GOOD SUFFIX is {0}".format(goodsuffix)
+          s += goodsuffix[j];
+          print "GOOD SUFFIX NEW STEP S - J ", s, j
+        if s == 0:
+            s += 1
+      else:
+        print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
+        return s
 
-        print "DOWN HERE NOW and J is {0} // S is {1}".format(j,s)
+      #j -= 1 # 
+      print "DOWN HERE NOW and J is {0} // S is {1}".format(j,s)
 
-      s += 1
+      #s += 1
       #print "AH, NOT MATCHED - MOVING on.."
     print "Sorry - no match found in document for pattern {0}".format(query)
     return None
