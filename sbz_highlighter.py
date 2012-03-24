@@ -6,17 +6,20 @@ def compute_prefix(list): # THIS IS CALLED BY GOODSUFFIX_HEURISTIC TO WORK OUT D
     size = len(list)
     k = 0
     q = 1
-    result = {}
-    result[0] = 0
+    result = {0:0}
+    #result[0] = 0
+    #print "In compute_prefix, result is ".format(result)
     while q < size:
+        #print "K is {0}, list[k] is {1} and list[q] is {2}. Q is {3} and size is {4}".format(k,list[k],list[q],q,size)
         while (k > 0) and (list[k] != list[q]):
-            print "testing", k
+            #print "testing", k
             k = result.get(k-1)
 
         if( k is not None and list[k] == list[q]):
             k += 1 
         result[q] = k
         q += 1
+    #print "Returning result {0}".format(result)
     return result
 
 def prepare_badcharacter_heuristic(query_list): # for each char in query, work out furthest right position
@@ -30,12 +33,17 @@ def prepare_goodsuffix_heuristic(query_list): # THIS BIT I KINDA FOLLOW BUT IT B
     result = {}
 
     reversd = query_list[::-1]
+    #print "REVERSED IS {0}".format(reversd)
     prefix_normal = compute_prefix(query_list)
     prefix_reversed = compute_prefix(reversd)
+
+    #print "PREFIX_NORMAL IS {0}".format(prefix_normal)
+    #print "PREFIX____REV IS {0}".format(prefix_reversed)
 
     i = 0
     while i <= size:
         normpre = size - prefix_normal[size-1]
+        #print "NORMPRE is {0}".format(normpre)
         if normpre is None:
             normpre = 0
         result[i] = size - normpre
@@ -64,18 +72,21 @@ def highlight_doc(doc,query):    #
     badcharacter = prepare_badcharacter_heuristic(query_list)
     goodsuffix = prepare_goodsuffix_heuristic(query_list)
 
-    s = 0 # index - position within Doc
-    print "\n"
+    s = 0 # OUR STARTING POSITION WITHING THE DOCUMENT
+    #print "\n"
     while  s <= doc_length - query_length:
-      j = query_length # ie. last character of query
-        #print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1], "S is",s+j-1,"J is", j
+      j = query_length # J is our position within the QUERY PATTERN WHICH WE'LL COUNT BACKWARDS FROM
+      print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1], "S is",s+j-1,"J is", j
+      print "DOC_LENGTH is {0}, QUERY_LENGTH is {1}".format(doc_length,query_length)
     
-      while ((j > 0) and (query_list[j-1] == doc_list[s+j-1])):
+      while ((j > 0) and (s+j-1 < doc_length) and (query_list[j-1] == doc_list[s+j-1])): # IS THERE AN OFF BY ONE POSSIBILITY HERE?
         print "\n"
-        #print "MATCH FOUND! -- ", query_list[j-1], doc_list[s+j-1], "AT POSITION ", (s+j-1)
+        print "MATCH FOUND! -- ", query_list[j-1], doc_list[s+j-1], "AT POSITION ", (s+j-1)
+        print "J is {0} and J minus one is {1}".format(j, j-1)
         j -= 1 # 
+        print "AFTER THE DECREMENT = querylist[j minus one is {0} and doclist(s plus j minus one) is {1}".format(query_list[j-1], doc_list[s+j-1])
         #print "Decremented J by one", j
-        #print "NOw looking for ", query_list[j-1], "IN", doc_list[s+j-1]
+        print "NOw looking for ", query_list[j-1], "IN", doc_list[s+j-1]
 
         if (j > 0): # 
           k = badcharacter.get(doc_list[s+j-1])
@@ -89,16 +100,19 @@ def highlight_doc(doc,query):    #
             s += (j-k-1)
             #print "NEW STEP S", s
           else:
-            #print "GOOD SUFFIX RETURNS", goodsuffix[j]
-            s+= goodsuffix[j];
+            print "GOOD SUFFIX RETURNS", goodsuffix[j]
+            print "If i reintroduce s it will be {0}".format(s + goodsuffix[j])
+            #s+= goodsuffix[j];
             #print "GOOD SUFFIX NEW STEP S - J ", s, j
         else:
           print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
           return s
-          #print "J", j
+          print "J", j
+
+        print "DOWN HERE NOW and J is {0} // S is {1}".format(j,s)
 
       s += 1
-      print "AH, NOT MATCHED - MOVING on.."
+      #print "AH, NOT MATCHED - MOVING on.."
     print "Sorry - no match found in document for pattern {0}".format(query)
     return None
 
