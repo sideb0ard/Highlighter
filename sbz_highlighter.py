@@ -125,4 +125,16 @@ def highlight_doc(doc,query):    #
 
 
 if __name__ == "__main__":
-    highlight_doc(sys.argv[1],sys.argv[2])
+    #print "LENGTH IS {0}".format(len(sys.argv))
+    if len(sys.argv) != 3: 
+        print 'Usage: sbz_highlighter.py <FILE> <SEARCH_TERM>' 
+        sys.exit(1) 
+    #print "ARGV[0] = {0} and ARGV[1] = {1} 2 - {2}".format(sys.argv[0],sys.argv[1],sys.argv[2])
+
+    file = open(sys.argv[1])
+    lines = file.read()
+
+    #print "\n{0}".format(lines)
+
+    matchpoint = highlight_doc(lines,sys.argv[2])
+    print "METHOD RETURNED WITH MATCHPOINT {0}".format(matchpoint)
