@@ -69,7 +69,7 @@ def highlight_doc(doc,query):    #
 
     s = 0 # index - position within Doc
     print "\n"
-    while  s < doc_length - query_length:
+    while  s <= doc_length - query_length:
       j = query_length # ie. last character of query
       print "Looking at ", doc_list[s+j-1], " for ", query_list[j-1], "S is",s+j-1,"J is", j
     
@@ -80,25 +80,26 @@ def highlight_doc(doc,query):    #
         print "Decremented J by one", j
         print "NOw looking for ", query_list[j-1], "IN", doc_list[s+j-1]
 
-#        if (j > 0): # 
-#          k = badcharacter.get(doc_list[s+j-1])
-#          print "Moved k back one ", k
-#          print "Kmonster", k
-#          if k is None:
-#            print "K is NONE, making it minus 1"
-#            k =-1
-#            print "newK", k
-#          if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
-#            s += (j-k-1)
-#            print "NEW STEP S", s
-#          else:
-#            s+= goodsuffix[j];
+        if (j > 0): # 
+          k = badcharacter.get(doc_list[s+j-1])
+          print "Moved k back one ", k
+          print "Kmonster", k
+          if k is None:
+            print "K is NONE, making it minus 1"
+            k =-1
+            print "newK", k
+          if (k is not None and k < j) and ((j-k-1) > goodsuffix[j]):
+            s += (j-k-1)
+            print "NEW STEP S", s
+          else:
+            print "GOOD SUFFIX RETURNS", goodsuffix[j]
+#            s+= goodsuffix[j]-1;
 #            print "GOOD SUFFIX NEW STEP S - J ", s, j
-##else:
-#        print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
-#        return s
-#        #j += 1
-#        print "J", j
+        else:
+          print "RETURNED WITH POSITION S", s, "ON CHAR", doc_list[s:(s+query_length)]
+          return s
+          print "J", j
+
       s += 1
       print "AH, NOT MATCHED - MOVING on.."
     print "RETURNNZNONE!!"
