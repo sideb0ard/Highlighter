@@ -7,7 +7,6 @@ import re
 def highlight_doc(doc,query):
     query_words = query.split()
     query_word_count = len(query_words) 
-    print "QUERY_WORD_COUNT {0}".format(query_word_count)
     #if len(query_words) > 1:
     #    for word in query_words:
     #        print "WORD:: {0}".format(word)
@@ -18,11 +17,10 @@ def highlight_doc(doc,query):
 
     if result is None:
         if query_word_count > 1:
-            print "SINGLE WORD SEARCH"
+            #print "SINGLE WORD SEARCH"
             displaytext = single_word_highlight(doc,query_words)
-            print "\n\n{0}\n\n".format(displaytext)
-        else:
-            print "Sorry bud, no dice"
+            #print "\n\n{0}\n\n".format(displaytext)
+            return displaytext
     else:
         #print "RESULT! {0}".format(result)
         #displaytext = re.sub('(.*)(%s)(.*)' % query, '\\1%s\\2%s\\3' % (highlightOn,highlightOff), doc)
@@ -30,7 +28,8 @@ def highlight_doc(doc,query):
         displaytext = re.sub(".*?(.{,150})(%s)(.{,350})" % query, "\\1%s\\2%s\\3" % (highlightOn,highlightOff), doc, count=1)
         displaytext = displaytext[:400]
 
-        print "\n\n{0}\n\n".format(displaytext)
+        #print "\n\n{0}\n\n".format(displaytext)
+        return displaytext
 
 
 def single_word_highlight(text,query_words):
@@ -39,12 +38,12 @@ def single_word_highlight(text,query_words):
     for word in query_words:
         wordresult = re.search(word,wordtransform)
         if wordresult is not None:
-            print "FOUND WORD {0}".format(word)
+            #print "FOUND WORD {0}".format(word)
             #print "WORDRESULT = {0}".format(wordtransform)
             #wordtransform = re.sub("(.{300})(%s)(.*)" % word, "\\1%s\\2%s\\3" % (highlightOn,highlightOff), wordtransform, count=12)
             if x < 1:
                 print "X LESS THAN ONE"
-                wordtransform = re.sub(".*?(.{,150})(%s)(.{,250})" % word, "\\1%s\\2%s\\3" % (highlightOn,highlightOff), wordtransform, count=12)
+                wordtransform = re.sub(".*?(.{,150})(%s)(.{,250})" % word, "\\1%s\\2%s\\3" % (highlightOn,highlightOff), wordtransform, count=1)
                 wordtransform = wordtransform[:600]
             else:
                 wordtransform = re.sub("(.*)(%s)(.*)" % word, "\\1%s\\2%s\\3" % (highlightOn,highlightOff), wordtransform, count=12)
@@ -71,6 +70,8 @@ if __name__ == "__main__":
 
     highlightOn = "[[HIGHLIGHT]]"
     highlightOff = "[[ENDHIGHLIGHT]]"
-    highlight_doc(doc,query)
+    searchresult = highlight_doc(doc,query)
+
+    print "\nSEARCH REZULT: \n{0}\n".format(searchresult)
 
     #pat = re.compile(r'([A-Z][^\.!?]*[\.!?])', re.M)
