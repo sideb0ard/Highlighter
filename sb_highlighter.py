@@ -12,8 +12,9 @@ def highlight_doc(doc,query):
         highlightOff = "[[ENDHIGHLIGHT]]"
         #print "RESULT! {0}".format(result)
         #displaytext = re.sub('(.*)(%s)(.*)' % query, '\\1%s\\2%s\\3' % (highlightOn,highlightOff), doc)
-        displaytext = re.sub('(.*)(%s)(.*)' % query, '\\1%s\\2%s\\3' % (highlightOn,highlightOff), doc)
-        print "DISPLAYTEXT: {0}".format(displaytext)
+        #displaytext = re.sub(".*(.{,70})(%s)(.*)" % query, '\\1%s\\2%s\\3' % (highlightOn,highlightOff), doc)
+        displaytext = re.sub(".*?(.{,20})(%s)(.{,100})" % query, '\\1%s\\2%s\\3' % (highlightOn,highlightOff), doc)
+        print "\n\n{0}\n\n".format(displaytext)
 
 
 if __name__ == "__main__":
